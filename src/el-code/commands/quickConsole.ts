@@ -4,21 +4,29 @@ import Defaults from '../defaults'
 export default async (d: Defaults) => {
 
   const file = path.basename(d.doc?.fileName)
-  const selection = d.doc?.getText(d.editor?.selection).trim() || ''
+  const alineLength = d.doc?.lineAt(d.active().line).text.length || 0
+  const alineChars = d.doc?.lineAt(d.active().line).text.trim().length || 0
+  const alineEnd = d.vsPos(d.active().line, alineLength)
+
+  const selection =
+    d.doc?.getText(d.editor?.selection).trim().replace('$', '\\$') ||
+    `'| --- ${(d.editor?.selection.active.line || 0) +
+    (alineChars > 0 ? 2 : 1)} --- |'` || ''
 
   let msg = ''
 
   if (d.lang === 'python')
     msg = `print('${d.icon}|${file}|', ${selection})`
   else if (d.lang === 'php')
-    msg = `echo '${d.icon}|${file}|', ${selection.replace('$', '\\$')};`
+    msg = `echo '${d.icon}|${file}|', ${selection};`
+  else if (d.lang === 'twig')
+    msg = `<br/>${d.icon}<br/><pre>{{ dump(${selection}) }}</pre>`
   else
     msg = `console.log('${d.icon}|${file}|', ${selection})`
 
-  const alineLength = d.doc?.lineAt(d.active().line).text.length || 0
-  const alineChars = d.doc?.lineAt(d.active().line).text.trim().length || 0
-  const alineEnd = d.vsPos(d.active().line, alineLength)
-  if (d.editor) d.editor.selections = [d.vsSel(alineEnd, alineEnd)]
+    
+  if (!d.editor) return
+  d.editor.selections = [d.vsSel(alineEnd, alineEnd)]
 
   await d.insertSnippet(`${alineChars > 0 ? '\n' : ''}${msg}`)
 

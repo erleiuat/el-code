@@ -15,6 +15,10 @@ const insert = async (...items: [pos: vs.Position, text: string][]) => {
   await editor?.edit(e => items.forEach((elem) => e.insert(elem[0], elem[1])))
 }
 
+const remove = async (...items: [pos1: vs.Position, pos2: vs.Position][]) => {
+  await editor?.edit(e => items.forEach((elem) => e.delete(vsRan(elem[0], elem[1]))))
+}
+
 class Line {
 
   pos: vs.Position | null = null
@@ -54,6 +58,7 @@ class Defaults {
   vsRan = vsRan
   replace = replace
   insert = insert
+  remove = remove
   insertSnippet = async (content: string) => await editor?.insertSnippet(new vs.SnippetString(content))
   lineFromPos = (pos: vs.Position | undefined) => new Line(pos)
 
