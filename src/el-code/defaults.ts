@@ -27,9 +27,15 @@ class Line {
   indent: number = 0
   replace: (text: string) => Promise<boolean>
 
-  constructor (pos?: vs.Position) {
+  constructor (pos: vs.Position = vsPos(0, 0)) {
 
-    this.pos = pos || vsPos(0, 0)
+    try {
+      this.text = doc()?.lineAt(pos.line).text || ''
+    } catch (e) {
+      console.log(e)
+    }
+
+    this.pos = pos
     this.line = this.pos.line
     this.start = vsPos(this.pos.line, 0)
     this.end = vsPos(this.pos.line, this.text.length) || 0
@@ -37,21 +43,10 @@ class Line {
     this.indent = this.text.length - this.text.trimLeft().length || 0
     this.replace = async (text: string) => await replace([ this.range, text ])
 
-    try {
-
-      this.text = doc()?.lineAt(this.pos.line).text || ''
-
-    } catch (e) {
-
-      console.log(this.pos.line)
-      console.log(e)
-
-    }
-
   }
 
 }
-class Defaults {
+export default class Defaults {
 
   vs: object = vs
   icon: string = icon
@@ -75,5 +70,3 @@ class Defaults {
   }
 
 }
-
-export default Defaults

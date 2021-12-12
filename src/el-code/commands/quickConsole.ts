@@ -4,14 +4,16 @@ const path = require('path')
 export default async (d: Defaults) => {
   if (!d.doc || !d.editor) return
 
-  let msg = ''
   const file = path.basename(d.doc.fileName)
-  const alineLength = d.doc.lineAt(d.sel.active().line).text.length
-  const alineEnd = d.vsPos(d.sel.active().line, alineLength)
-  const alineChars = d.doc.lineAt(d.sel.active().line).text.trim().length > 0
+  const aLine = d.sel.active()
+  const aLineLength = d.doc.lineAt(aLine.line).text.length
+  const aLineEnd = d.vsPos(aLine.line, aLineLength)
+  const aLineChars = d.doc.lineAt(aLine.line).text.trim().length > 0
   const selection
     = d.doc.getText(d.editor.selection).trim().replace('$', '\\$')
-    || `'| --- ${ d.editor.selection.active.line + (alineChars ? 2 : 1) } --- |'` || ''
+    || `'| --- ${ aLine.line + (aLineChars ? 2 : 1) } --- |'` || ''
+
+  let msg = ''
 
   switch (d.lang()) {
 
@@ -30,8 +32,8 @@ export default async (d: Defaults) => {
 
   }
 
-  d.editor.selections = [ d.vsSel(alineEnd, alineEnd) ]
-  await d.insertSnippet(`${ alineChars ? '\n' : '' }${ msg }`)
+  d.editor.selections = [ d.vsSel(aLineEnd, aLineEnd) ]
+  await d.insertSnippet(`${ aLineChars ? '\n' : '' }${ msg }`)
 
   const nLine = d.sel.active().line
   const nlineLength = d.doc.lineAt(nLine).text.length

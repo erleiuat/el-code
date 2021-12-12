@@ -2,9 +2,10 @@ const icon = ''
 
 const t1 = ''
 const t2 = ''
-const t3 = ''
+// const t3 = ''	🦄
 const t4 = ''
 const t5 = ''
+console.log('|TypeScript.ts|', t5)
 
 let lang = 'sss'
 
