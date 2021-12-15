@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"description": "Some commands that may make life easier",
 	"icon": "img/el-icon.png",
-	"version": "0.6.1",
+	"version": "0.6.2",
 	"engines": {
 		"vscode": "^1.63.0"
 	},
