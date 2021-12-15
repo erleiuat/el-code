@@ -5,8 +5,8 @@
 	"author": "Elia Reutlinger",
 	"license": "MIT",
 	"description": "Some commands that may make life easier",
-	"icon": "public/icon.png",
-	"version": "0.3.0",
+	"icon": "img/icon.png",
+	"version": "0.4.0",
 	"engines": {
 		"vscode": "^1.63.0"
 	},
